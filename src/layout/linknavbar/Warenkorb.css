@@ -1,0 +1,27 @@
+.warenkorb {
+  margin-left: 200px;
+  margin-top: -35px;
+}
+.waren {
+  color: white;
+}
+
+.liste {
+  background-color: #f5f5dc;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin: 10px;
+}
+
+#objImg {
+  width: 200px;
+  height: 150px;
+}
+.form {
+  margin: 10px;
+}
+.btn {
+  margin-right: 10px;
+}
