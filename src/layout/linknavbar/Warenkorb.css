@@ -25,3 +25,10 @@
 .btn {
   margin-right: 10px;
 }
+.header{
+  text-align: center;
+}
+.yourcart{
+  display: flex;
+  flex-direction: row;
+}

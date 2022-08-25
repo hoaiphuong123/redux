@@ -1,19 +1,18 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import Warenkorb from '../layout/linknavbar/Warenkorb.js';
+import { NavLink } from 'react-router-dom';
+import './layout.css';
 
-export default function Navlink() {
+export default function layout() {
   return (
-    <nav className="topnav">
-      <Link style={{ textDecoration: 'none' }} to="/">
-        Products
-      </Link>
-      <Link style={{ textDecoration: 'none', marginLeft: '15px' }} to="/main">
-        Main
-      </Link>
-      <div>
-        <Warenkorb />
-      </div>
-    </nav>
+    <div>
+      <nav className="topnav">
+        <NavLink style={{ textDecoration: 'none' }} to="/product">
+          Products
+        </NavLink>
+        <NavLink style={{ textDecoration: 'none', marginLeft: '15px' }} to="/Waren">
+          My-Cart
+        </NavLink>
+      </nav>
+    </div>
   );
 }

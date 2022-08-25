@@ -1,66 +1,33 @@
-import { React, useState, useEffect } from 'react';
-import { connect } from 'react-redux';
-import { Index } from '../product/products.js';
-import { toast } from 'react-toastify';
-import { addCount } from '../action/action.js';
-import 'react-toastify/dist/ReactToastify.css';
+import React, { useState } from 'react';
 import './main.css';
+import { useDispatch, useSelector } from 'react-redux';
+import { checkProduct, onBackStep, onNextStep, decreaseQuantity, increaseQuantity, addData } from '../action/sliceproduct';
 
-toast.configure();
-export function Main(Props) {
-  const [i, setI] = useState(0);
-  const [quantity, setQuantity] = useState(0);
+export default function Main() {
+  const [product, setProduct] = useState('');
 
-  useEffect(() => {
-    setI(Index);
-  }, []);
-
-  const total = (event) => {
-    if (event.target.value < 0) return;
-    setQuantity(event.target.value);
+  const handleAdd = (e) => {
+    setProduct(e.target.value);
   };
-
-  function addToKorb(object, menge, prix, idx) {
-    if (menge === 0) {
-      return;
-    }
-    Props.products[idx].quantity.push(menge);
-    const x = menge * prix;
-    Props.products[idx].total.push(x);
-    Props.totalToPay.push(x);
-    Props.warenListe.push(object);
-    // Notification //
-    toast.success('Product added to your Korb', {
-      position: toast.POSITION.BOTTOM_CENTER,
-      autoClose: 1000,
-    });
-  }
+  const changeAdd = (e) => {
+    e.preventDefault();
+    console.log(product);
+    alert('success');
+  };
+  const dispatch = useDispatch();
+  const { checkout } = useSelector((state) => state.product);
 
   return (
     <div className="box">
-      <h1 className="title">{Props.products[i].name}</h1>
-      <h4>Price: {Props.products[i].price} $</h4>
-      <p className="contextproduc">Giỏ hàng đã thêm 1 sản phẩm</p>
-      <input value={quantity} type="number" onChange={total}></input>
-      <button type="button" className="btn btn-success" onClick={() => addToKorb(Props.products[i], quantity, Props.products[i].price, i)}>
-        Add to Korb
-      </button>
+      <form onSubmit={changeAdd}>
+        <h1 className="title"> </h1>
+        <h4>Price: $</h4>
+        <p className="contextproduc">Giỏ hàng đã thêm 1 sản phẩm</p>
+        <input value={product} type="number" onChange={handleAdd} />
+        <button type="submit" value="submit" className="btn btn-success">
+          Add to Korb
+        </button>
+      </form>
     </div>
   );
 }
-
-const mapStateToProps = (state) => {
-  return {
-    products: state.products,
-    warenListe: state.warenListe,
-    totalToPay: state.totalToPay,
-    count: state.count,
-  };
-};
-const dispatchtoProps = (dispatch) => {
-  return {
-    addCount: (value) => dispatch(addCount(value)),
-  };
-};
-
-export default connect(mapStateToProps, dispatchtoProps)(Main);

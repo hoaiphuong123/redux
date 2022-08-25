@@ -1,53 +1,18 @@
-import { ADD_COUNT } from './type.js';
+import { useDispatch as useReduxDispatch, useSelector as useReduxSelector } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
+import { rootPersistConfig, rootReducer } from './rootReduces';
+import { persistReducer, persistStore } from 'redux-persist';
 
-const initialState = {
-  products: [
-    {
-      id: '0',
-      name: 'sản phẩm 1',
-      price: 100,
-      quantity: [],
-      total: [],
-    },
-    {
-      id: '1',
-      name: 'sản phẩm 2',
-      price: 200,
-      quantity: [],
-      total: [],
-    },
-    {
-      id: '2',
-      name: 'sản phẩm 3',
-      price: 300,
-      quantity: [],
-      total: [],
-    },
-    {
-      id: '3',
-      name: 'sản phẩm 4',
-      price: 500,
-      quantity: [],
-      total: [],
-    },
-  ],
-  warenListe: [],
-  totalToPay: [],
-  count: 0,
-};
+const store = configureStore({
+  reducer: persistReducer(rootPersistConfig, rootReducer),
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+      immutableCheck: false,
+    }),
+});
+const persistor = persistStore(store);
+const useSelector = useReduxSelector;
 
-const rootReducer = (state = initialState, action) => {
-  switch (action.type) {
-    case ADD_COUNT:
-      return { count: action.value + 1 };
-    default:
-      return state;
-  }
-};
-
-export default rootReducer;
-
-const store = configureStore({ reducer: rootReducer });
-
-export { store };
+const useDispatch = () => useReduxDispatch();
+export { store, persistor, useSelector, useDispatch };

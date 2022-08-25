@@ -1,75 +1,37 @@
-import { React, useEffect, useState } from 'react';
+import React from 'react';
 import './Warenkorb.css';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import Warenw from './Warenw';
+import { addProduct, decreaseQuantity, increaseQuantity, removeProduct } from '../../action/sliceproduct';
+import PropTypes from 'prop-types';
 
-function Waren(Props) {
-  const [products, setProducts] = useState([]);
-  const [sum, setSum] = useState(0);
+export default function Waren() {
+  const dispatch = useDispatch();
 
-  useEffect(() => {
-    let summe = 0;
-    const array = Props.totalToPay;
-    for (let i = 0; i < array.length; i++) {
-      summe = summe + array[i];
-    }
-    setSum(summe);
-  }, []);
-
-  useEffect(() => {
-    setProducts(Props.warenListe);
-  }, []);
-
-  function remove(index) {
-    // Calculate the total to pay - //
-    let newSum = sum;
-    newSum = newSum - Props.totalToPay[index];
-    setSum(newSum);
-    Props.totalToPay.splice(index, 1);
-
-    // Here remove the Item //
-    Props.warenListe.splice(index, 1);
-    const newarray = [...products];
-    newarray.splice(index, 1);
-    setProducts(newarray);
+  const itemsList = useSelector((state) => state.product.checkout.cart);
+  let totals = 0;
+  itemsList.forEach(myFunction);
+  function myFunction(item) {
+    totals += item.price * item.quantity;
+    console.log('myFunction', totals);
   }
 
+  const handleDeleteCart = () => {
+    dispatch(removeProduct());
+  };
   return (
-    <div>
-      <h1>Your Products: </h1>
-      <br />
-      <div>
-        {products.map((obj, index) => (
-          <div className="liste">
-            <h3>{obj.name}</h3>
-            <p>{obj.price}$</p>
-            <p>{obj.quantity[0]} product</p>
-            <p>Total: {obj.total} $</p>
-            <button onClick={() => remove(index)} type="button" className="btn btn-danger">
-              remove
-            </button>
-          </div>
+    <div className="cart-container">
+      <h2>Your Cart</h2>
+      <ul>
+        {itemsList.map((item) => (
+          <li key={item.id}>
+            <Warenw quantity={item.quantity} id={item.id} price={item.price} name={item.name} total={item.price * item.quantity} onDelete={handleDeleteCart} />
+          </li>
         ))}
-        <h2>Total: {sum}$</h2>
-        <button type="submit">Continue to Payment</button>
-      </div>
+        <div className="total-price">
+          <h3>SubTotal: {totals}$</h3>
+        </div>
+      </ul>
     </div>
   );
 }
-
-// Here we take the products from Redux Store //
-const mapStateToProps = (state) => {
-  return {
-    warenListe: state.warenListe,
-    totalToPay: state.totalToPay,
-  };
-};
-
-// Here we make our Actions on react redux Store //
-const mapDispatchToProps = (dispatch) => {
-  return {
-    RemoveFromKorb: (index) => dispatch(RemoveFromKorb(index)),
-  };
-};
-
-// Here we conncect our Component with our Redux-Store //
-export default connect(mapStateToProps, mapDispatchToProps)(Waren);
